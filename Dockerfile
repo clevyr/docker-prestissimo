@@ -1,4 +1,4 @@
-FROM composer
+FROM composer:1
 
 ARG PRESTISSIMO_VERSION=0.3.10
 
