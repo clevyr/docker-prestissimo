@@ -1,4 +1,5 @@
-FROM php:7.4-alpine
+ARG PHP_VERSION
+FROM php:$PHP_VERSION-alpine
 
 COPY --from=composer:1 /usr/bin/composer /usr/bin/composer
 

@@ -6,13 +6,17 @@ on:
   push:
     branches: master
 
-env:
-  image: clevyr/prestissimo
-
 jobs:
   build:
-    name: Build Image
+    name: Build PHP ${{ matrix.php_version }} Image
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php_version: ["5.6", "7.0", "7.1",  "7.2", "7.3", "7.4"]
+        include:
+          - php_version: "7.4"
+            extra_tags: |
+              clevyr/prestissimo:latest
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -31,8 +35,12 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
-          tags: ${{ env.image }}:latest
+          platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm64/v8,linux/ppc64le
+          tags: |
+            clevyr/prestissimo:${{ matrix.php_version }}
+            ${{ matrix.extra_tags }}
+          build-args: |
+            PHP_VERSION=${{ matrix.php_version }}
 
   readme:
     name: Update DockerHub Description
@@ -45,4 +53,4 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          repository: ${{ env.image }}
+          repository: clevyr/prestissimo
