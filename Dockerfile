@@ -8,5 +8,6 @@ ARG PRESTISSIMO_VERSION=0.3.10
 RUN set -x \
     && apk add --no-cache \
         git \
+        openssh-client \
     && composer global require "hirak/prestissimo:$PRESTISSIMO_VERSION" \
     && composer clear-cache
